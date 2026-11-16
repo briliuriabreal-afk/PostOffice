@@ -1,0 +1,638 @@
+<Window x:Class="PostOffice.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Почтовое отделение"
+        Style="{DynamicResource WindowStyle}"
+        Language="ru-RU"
+        Icon="/Assets/Images/icon.png"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True"
+        Height="750"
+        Width="1200"
+        MinHeight="600"
+        MinWidth="1150">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Стиль задан каждому пункту: вложенные пункты его не наследуют -->
+        <Menu Grid.Row="0"
+              Style="{DynamicResource MenuStyle}">
+            <MenuItem Header="_Файл"
+                      Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="_Войти..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding LoginCommand}"/>
+                <MenuItem Header="_Регистрация подписчиком..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding RegisterCommand}"/>
+                <MenuItem Header="Сменить _пароль..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ChangePasswordCommand}"/>
+                <MenuItem Header="Выйти из учётной записи"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding LogoutCommand}"/>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <MenuItem Header="Обновить данные"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding RefreshCommand}"/>
+                <MenuItem Header="Вернуть исходные данные..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding RegenerateCommand}"/>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <MenuItem Header="Вы_ход"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ExitCommand}"/>
+            </MenuItem>
+
+            <MenuItem Header="_Отделение"
+                      Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="Принять почтальона на работу..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding HirePostmanCommand}"/>
+                <MenuItem Header="Уволить почтальона..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding FirePostmanCommand}"/>
+                <MenuItem Header="Передать участок другому почтальону..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ReassignDistrictCommand}"/>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <MenuItem Header="Отчёт о доставке по участкам в PDF"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ReportCommand}"/>
+                <MenuItem Header="Справка о подписчиках и изданиях"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding SummaryCommand}"/>
+            </MenuItem>
+
+            <MenuItem Header="_Подписка"
+                      Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="Новый клиент..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding NewSubscriberCommand}"/>
+                <MenuItem Header="Выдать логин клиенту..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding SetAccountCommand}"/>
+                <MenuItem Header="Изменить адрес клиента..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ChangeAddressCommand}"/>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <MenuItem Header="Оформить подписку..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding SubscribeCommand}"/>
+                <MenuItem Header="Квитанция по выбранной подписке в PDF"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ReceiptCommand}"/>
+                <MenuItem Header="Квитанция выбранному клиенту..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ClientReceiptCommand}"/>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <MenuItem Header="Новое подписное издание..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding NewPublicationCommand}"/>
+                <MenuItem Header="Изменить цену издания..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding ChangePriceCommand}"/>
+            </MenuItem>
+
+            <MenuItem Header="_Запросы"
+                      Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="1. Экземпляры всех изданий отделения"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding Query1Command}"/>
+                <MenuItem Header="2. Почтальон по адресу подписчика..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding Query2Command}"/>
+                <MenuItem Header="3. Газеты, которые выписывает гражданин..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding Query3Command}"/>
+                <MenuItem Header="4. Сколько почтальонов работает"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding Query4Command}"/>
+                <MenuItem Header="5. Участок с максимумом экземпляров"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding Query5Command}"/>
+                <MenuItem Header="6. Средний срок подписки по изданиям"
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding Query6Command}"/>
+            </MenuItem>
+
+            <MenuItem Header="_Справка"
+                      Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="_О программе..."
+                          Style="{DynamicResource MenuItemStyle}"
+                          Command="{Binding AboutCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <ToolBarTray Grid.Row="1"
+                     Style="{DynamicResource ToolBarTrayStyle}">
+            <ToolBar Style="{DynamicResource ToolBarStyle}">
+                <Button ToolTip="Вернуть данные базы к исходным: подписки, клиенты и работники заполняются заново"
+                        Command="{Binding RegenerateCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <Image Source="/Assets/Images/generate.png"
+                           Style="{DynamicResource ToolBarImageStyle}"/>
+                </Button>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <Button ToolTip="Войти по логину и паролю: работник отделения или подписчик"
+                        Command="{Binding LoginCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <TextBlock Text="Войти"
+                               Style="{DynamicResource ToolBarCaptionStyle}"/>
+                </Button>
+
+                <Button ToolTip="Зарегистрироваться подписчиком: видеть свои подписки и их историю"
+                        Command="{Binding RegisterCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <TextBlock Text="Регистрация"
+                               Style="{DynamicResource ToolBarCaptionStyle}"/>
+                </Button>
+
+                <Button ToolTip="Выйти из учётной записи и продолжить работу гостем"
+                        Command="{Binding LogoutCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <TextBlock Text="Выйти"
+                               Style="{DynamicResource ToolBarCaptionStyle}"/>
+                </Button>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <Button ToolTip="Принять почтальона на работу и выделить ему участок"
+                        Command="{Binding HirePostmanCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <Image Source="/Assets/Images/hire.png"
+                           Style="{DynamicResource ToolBarImageStyle}"/>
+                </Button>
+
+                <Button ToolTip="Уволить почтальона, распределив его участки между остальными"
+                        Command="{Binding FirePostmanCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <Image Source="/Assets/Images/fire.png"
+                           Style="{DynamicResource ToolBarImageStyle}"/>
+                </Button>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <Button ToolTip="Зарегистрировать нового клиента"
+                        Command="{Binding NewSubscriberCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Images/client.png"
+                               Style="{DynamicResource ToolBarImageStyle}"/>
+                        <TextBlock Text="Клиент"
+                                   Style="{DynamicResource ToolBarCaptionStyle}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button ToolTip="Оформить подписку и выдать квитанцию"
+                        Command="{Binding SubscribeCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Images/subscription.png"
+                               Style="{DynamicResource ToolBarImageStyle}"/>
+                        <TextBlock Text="Подписка"
+                                   Style="{DynamicResource ToolBarCaptionStyle}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button ToolTip="Добавить новое подписное издание"
+                        Command="{Binding NewPublicationCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Images/publication.png"
+                               Style="{DynamicResource ToolBarImageStyle}"/>
+                        <TextBlock Text="Издание"
+                                   Style="{DynamicResource ToolBarCaptionStyle}"/>
+                    </StackPanel>
+                </Button>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <Button ToolTip="Отчёт о доставке газет и журналов по участкам"
+                        Command="{Binding ReportCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Images/report.png"
+                               Style="{DynamicResource ToolBarImageStyle}"/>
+                        <TextBlock Text="Отчёт"
+                                   Style="{DynamicResource ToolBarCaptionStyle}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button ToolTip="Справка о подписчиках, газетах и журналах на текущий момент"
+                        Command="{Binding SummaryCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Images/summary.png"
+                               Style="{DynamicResource ToolBarImageStyle}"/>
+                        <TextBlock Text="Справка"
+                                   Style="{DynamicResource ToolBarCaptionStyle}"/>
+                    </StackPanel>
+                </Button>
+
+                <Separator Style="{DynamicResource SeparatorStyle}"/>
+
+                <Button ToolTip="О программе"
+                        Command="{Binding AboutCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <Image Source="/Assets/Images/help.png"
+                           Style="{DynamicResource ToolBarImageStyle}"/>
+                </Button>
+
+                <Button ToolTip="Выход из приложения"
+                        Command="{Binding ExitCommand}"
+                        Style="{DynamicResource ToolBarButtonStyle}">
+                    <Image Source="/Assets/Images/exit.png"
+                           Style="{DynamicResource ToolBarImageStyle}"/>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+
+        <TabControl Grid.Row="2"
+                    SelectedIndex="{Binding TbcSelectedIndex}"
+                    Style="{DynamicResource TabControlStyle}">
+
+            <!-- Каталог виден всем, в том числе гостю -->
+            <TabItem Header="Издания"
+                     Style="{DynamicResource TabItemStyle}">
+                <DataGrid ItemsSource="{Binding Publications}"
+                          Style="{DynamicResource ResultGridStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Индекс"
+                                            Binding="{Binding PubIndex}"/>
+                        <DataGridTextColumn Header="Название"
+                                            Binding="{Binding Title}"
+                                            Width="*"/>
+                        <DataGridTextColumn Header="Вид"
+                                            Binding="{Binding PublicationType.Name}"/>
+                        <DataGridTextColumn Header="Цена за месяц, ₽"
+                                            Binding="{Binding Price, StringFormat=N2}"
+                                            ElementStyle="{DynamicResource NumberCellStyle}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Мои подписки"
+                     IsEnabled="{Binding IsSubscriber}"
+                     Style="{DynamicResource TabItemStyle}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top"
+                                Style="{DynamicResource CommandPanelStyle}">
+                        <Button Content="Квитанция в PDF"
+                                ToolTip="Сохранить файл квитанции по выбранной в таблице подписке"
+                                Command="{Binding ReceiptCommand}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding MySubscriptions}"
+                              SelectedItem="{Binding SelectedSubscription}"
+                              Style="{DynamicResource ResultGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Квитанция"
+                                                Binding="{Binding Id}"
+                                                ElementStyle="{DynamicResource NumberCellStyle}"/>
+                            <DataGridTextColumn Header="Индекс"
+                                                Binding="{Binding PubIndex}"/>
+                            <DataGridTextColumn Header="Название"
+                                                Binding="{Binding Title}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Вид"
+                                                Binding="{Binding PublicationType}"/>
+                            <DataGridTextColumn Header="Оформлена"
+                                                Binding="{Binding IssueDate, StringFormat=dd.MM.yyyy}"/>
+                            <DataGridTextColumn Header="Начало"
+                                                Binding="{Binding DateStart, StringFormat=dd.MM.yyyy}"/>
+                            <DataGridTextColumn Header="Окончание"
+                                                Binding="{Binding DateEnd, StringFormat=dd.MM.yyyy}"/>
+                            <DataGridTextColumn Header="Мес."
+                                                Binding="{Binding Duration}"
+                                                ElementStyle="{DynamicResource NumberCellStyle}"/>
+                            <DataGridTextColumn Header="Экз."
+                                                Binding="{Binding Copies}"
+                                                ElementStyle="{DynamicResource NumberCellStyle}"/>
+                            <DataGridTextColumn Header="Цена, ₽"
+                                                Binding="{Binding Price, StringFormat=N2}"
+                                                ElementStyle="{DynamicResource NumberCellStyle}"/>
+                            <DataGridTextColumn Header="Стоимость, ₽"
+                                                Binding="{Binding Cost, StringFormat=N2}"
+                                                ElementStyle="{DynamicResource NumberCellStyle}"/>
+                            <DataGridTextColumn Header="Состояние"
+                                                Binding="{Binding Status}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <!-- команды над таблицей выполняются для выбранного в ней клиента -->
+            <TabItem Header="Клиенты"
+                     IsEnabled="{Binding IsOperator}"
+                     Style="{DynamicResource TabItemStyle}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top"
+                                Style="{DynamicResource CommandPanelStyle}">
+                        <Button Content="Новый клиент..."
+                                ToolTip="Зарегистрировать нового клиента"
+                                Command="{Binding NewSubscriberCommand}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="Оформить подписку..."
+                                ToolTip="Оформить подписку выбранному клиенту и выдать квитанцию"
+                                Command="{Binding SubscribeCommand}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="Выдать логин..."
+                                ToolTip="Выдать выбранному клиенту логин и временный пароль"
+                                Command="{Binding SetAccountCommand}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="Изменить адрес..."
+                                ToolTip="Изменить домашний адрес выбранного клиента"
+                                Command="{Binding ChangeAddressCommand}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="Квитанция клиенту..."
+                                ToolTip="Выбрать подписку клиента и повторно выдать квитанцию"
+                                Command="{Binding ClientReceiptCommand}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding Subscribers}"
+                              SelectedItem="{Binding SelectedSubscriber}"
+                              Style="{DynamicResource ResultGridStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Подписчик"
+                                                Binding="{Binding ShortName}"/>
+                            <DataGridTextColumn Header="Паспорт"
+                                                Binding="{Binding Passport}"/>
+                            <DataGridTextColumn Header="Адрес"
+                                                Binding="{Binding Address}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Участок"
+                                                Binding="{Binding DistrictNumber}"
+                                                ElementStyle="{DynamicResource NumberCellStyle}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Почтальоны и участки"
+                     IsEnabled="{Binding CanSeeDistricts}"
+                     Style="{DynamicResource TabItemStyle}">
+                <!-- оператору доступны почтальоны и участки, почтальону - дома его участков -->
+                <TabControl SelectedIndex="{Binding DistrictsTabIndex}"
+                            Style="{DynamicResource TabControlStyle}">
+                    <TabItem Header="Работающие почтальоны"
+                             IsEnabled="{Binding IsOperator}"
+                             Style="{DynamicResource TabItemStyle}">
+                        <DataGrid ItemsSource="{Binding Postmen}"
+                                  Style="{DynamicResource ResultGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Почтальон"
+                                                    Binding="{Binding ShortName}"
+                                                    Width="*"/>
+                                <DataGridTextColumn Header="Участков"
+                                                    Binding="{Binding DistrictCount}"
+                                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+
+                    <TabItem Header="Участки"
+                             IsEnabled="{Binding IsOperator}"
+                             Style="{DynamicResource TabItemStyle}">
+                        <DataGrid ItemsSource="{Binding Districts}"
+                                  Style="{DynamicResource ResultGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Участок"
+                                                    Binding="{Binding Number}"
+                                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                <DataGridTextColumn Header="Почтальон"
+                                                    Binding="{Binding PostmanShortName}"
+                                                    Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+
+                    <TabItem Header="Дома моих участков"
+                             IsEnabled="{Binding IsPostman}"
+                             Style="{DynamicResource TabItemStyle}">
+                        <DataGrid ItemsSource="{Binding MyHouses}"
+                                  Style="{DynamicResource ResultGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Участок"
+                                                    Binding="{Binding DistrictNumber}"
+                                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                <DataGridTextColumn Header="Улица"
+                                                    Binding="{Binding Street}"/>
+                                <DataGridTextColumn Header="Дом"
+                                                    Binding="{Binding Building}"
+                                                    Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+
+            <TabItem Header="Запросы"
+                     IsEnabled="{Binding IsOperator}"
+                     Style="{DynamicResource TabItemStyle}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top"
+                                Style="{DynamicResource CommandPanelStyle}">
+                        <Button Content="1. Экземпляры изданий"
+                                ToolTip="Наименование и количество экземпляров всех изданий, получаемых отделением"
+                                Command="{Binding Query1Command}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="2. Почтальон по адресу"
+                                ToolTip="Фамилия почтальона, обслуживающего подписчика по заданному адресу"
+                                Command="{Binding Query2Command}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="3. Газеты гражданина"
+                                ToolTip="Какие газеты выписывает гражданин с заданными фамилией, именем, отчеством"
+                                Command="{Binding Query3Command}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="4. Число почтальонов"
+                                ToolTip="Сколько почтальонов работает в почтовом отделении"
+                                Command="{Binding Query4Command}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="5. Участок с максимумом"
+                                ToolTip="На каком участке количество экземпляров подписных изданий максимально"
+                                Command="{Binding Query5Command}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                        <Button Content="6. Средний срок"
+                                ToolTip="Средний срок подписки по каждому изданию"
+                                Command="{Binding Query6Command}"
+                                Style="{DynamicResource PanelButtonStyle}"/>
+                    </StackPanel>
+
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="{Binding QueryCaption}"
+                               Style="{DynamicResource QueryTextStyle}"/>
+
+                    <!-- результат каждого запроса - на своей вкладке со своими столбцами:
+                         вкладки листаются, не перезапуская запрос -->
+                    <TabControl SelectedIndex="{Binding QueryIndex}"
+                                Style="{DynamicResource TabControlStyle}">
+                        <TabItem Header="Запрос 1"
+                                 Style="{DynamicResource TabItemStyle}">
+                            <DataGrid ItemsSource="{Binding Query1Rows}"
+                                      Style="{DynamicResource ResultGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Индекс"
+                                                        Binding="{Binding PubIndex}"/>
+                                    <DataGridTextColumn Header="Название"
+                                                        Binding="{Binding Title}"
+                                                        Width="*"/>
+                                    <DataGridTextColumn Header="Вид"
+                                                        Binding="{Binding PublicationType}"/>
+                                    <DataGridTextColumn Header="Экземпляров"
+                                                        Binding="{Binding Copies}"
+                                                        ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+
+                        <TabItem Header="Запрос 2"
+                                 Style="{DynamicResource TabItemStyle}">
+                            <DataGrid ItemsSource="{Binding Query2Rows}"
+                                      Style="{DynamicResource ResultGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Почтальон"
+                                                        Binding="{Binding PostmanShortName}"/>
+                                    <DataGridTextColumn Header="Участок"
+                                                        Binding="{Binding DistrictNumber}"
+                                                        ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                    <DataGridTextColumn Header="Улица"
+                                                        Binding="{Binding Street}"/>
+                                    <DataGridTextColumn Header="Дом"
+                                                        Binding="{Binding Building}"
+                                                        Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+
+                        <TabItem Header="Запрос 3"
+                                 Style="{DynamicResource TabItemStyle}">
+                            <DataGrid ItemsSource="{Binding Query3Rows}"
+                                      Style="{DynamicResource ResultGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Индекс"
+                                                        Binding="{Binding PubIndex}"/>
+                                    <DataGridTextColumn Header="Название"
+                                                        Binding="{Binding Title}"
+                                                        Width="*"/>
+                                    <DataGridTextColumn Header="Начало"
+                                                        Binding="{Binding DateStart, StringFormat=dd.MM.yyyy}"/>
+                                    <DataGridTextColumn Header="Окончание"
+                                                        Binding="{Binding DateEnd, StringFormat=dd.MM.yyyy}"/>
+                                    <DataGridTextColumn Header="Экз."
+                                                        Binding="{Binding Copies}"
+                                                        ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                    <DataGridTextColumn Header="Адрес доставки"
+                                                        Binding="{Binding Address}"
+                                                        Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+
+                        <TabItem Header="Запрос 4"
+                                 Style="{DynamicResource TabItemStyle}">
+                            <TextBlock Text="{Binding Query4Result}"
+                                       Style="{DynamicResource BigNumberStyle}"/>
+                        </TabItem>
+
+                        <TabItem Header="Запрос 5"
+                                 Style="{DynamicResource TabItemStyle}">
+                            <DataGrid ItemsSource="{Binding Query5Rows}"
+                                      Style="{DynamicResource ResultGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Участок"
+                                                        Binding="{Binding DistrictNumber}"
+                                                        ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                    <DataGridTextColumn Header="Почтальон"
+                                                        Binding="{Binding PostmanShortName}"
+                                                        Width="*"/>
+                                    <DataGridTextColumn Header="Экземпляров"
+                                                        Binding="{Binding Copies}"
+                                                        ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+
+                        <TabItem Header="Запрос 6"
+                                 Style="{DynamicResource TabItemStyle}">
+                            <DataGrid ItemsSource="{Binding Query6Rows}"
+                                      Style="{DynamicResource ResultGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Индекс"
+                                                        Binding="{Binding PubIndex}"/>
+                                    <DataGridTextColumn Header="Название"
+                                                        Binding="{Binding Title}"
+                                                        Width="*"/>
+                                    <DataGridTextColumn Header="Средний срок, мес."
+                                                        Binding="{Binding AverageDuration, StringFormat=N2}"
+                                                        ElementStyle="{DynamicResource NumberCellStyle}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="Справка"
+                     IsEnabled="{Binding IsOperator}"
+                     Style="{DynamicResource TabItemStyle}">
+                <StackPanel>
+                    <TextBlock Text="{Binding SummaryCaption}"
+                               Style="{DynamicResource QueryTextStyle}"/>
+                    <TextBlock Style="{DynamicResource ResultTextStyle}">
+                        <Run Text="Подписчиков:"/>
+                        <Run Text="{Binding SummarySubscribers, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Style="{DynamicResource ResultTextStyle}">
+                        <Run Text="Газет:"/>
+                        <Run Text="{Binding SummaryNewspapers, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Style="{DynamicResource ResultTextStyle}">
+                        <Run Text="Журналов:"/>
+                        <Run Text="{Binding SummaryMagazines, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <!-- пользователь прижат вправо: длинное сообщение не вытесняет его, а обрезается -->
+        <StatusBar Grid.Row="3"
+                   Style="{DynamicResource StatusBarStyle}">
+            <StatusBarItem DockPanel.Dock="Right">
+                <TextBlock Style="{DynamicResource StatusTextStyle}">
+                    <Run Text="Пользователь:"/>
+                    <Run Text="{Binding UserName, Mode=OneWay}"/>
+                </TextBlock>
+            </StatusBarItem>
+
+            <Separator DockPanel.Dock="Right"
+                       Style="{DynamicResource SeparatorStyle}"/>
+
+            <StatusBarItem>
+                <TextBlock Text="{Binding Status}"
+                           TextTrimming="CharacterEllipsis"
+                           Style="{DynamicResource StatusTextStyle}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

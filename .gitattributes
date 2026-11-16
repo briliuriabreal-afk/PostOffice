@@ -1,0 +1,14 @@
+# Текстовые файлы в репозитории хранятся с LF, в рабочей папке Windows — с CRLF
+* text=auto eol=crlf
+
+# Двоичные файлы не трогать
+*.bak    binary
+*.mdf    binary
+*.ldf    binary
+*.png    binary
+*.jpg    binary
+*.ico    binary
+*.pdf    binary
+*.docx   binary
+*.pptx   binary
+*.asta   binary

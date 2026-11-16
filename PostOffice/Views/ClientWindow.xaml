@@ -1,0 +1,87 @@
+<Window x:Class="PostOffice.Views.ClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{DynamicResource WindowStyle}"
+        Language="ru-RU"
+        Icon="/Assets/Images/icon.png"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        FocusManager.FocusedElement="{Binding ElementName=TbxPassport}"
+        Title="Новый клиент">
+
+    <!-- Привязки пишут прямо в анкету клиента. Неверное значение анкета не принимает:
+         поле обводится рамкой, причина показывается при нажатии «Зарегистрировать» -->
+    <StackPanel Margin="24 18">
+        <TextBlock Text="Серия и номер паспорта"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <TextBox x:Name="TbxPassport"
+                 Text="{Binding Passport, ValidatesOnExceptions=True}"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock Text="Фамилия"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <TextBox x:Name="TbxSurname"
+                 Text="{Binding Surname, ValidatesOnExceptions=True}"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock Text="Имя"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <TextBox x:Name="TbxName"
+                 Text="{Binding Name, ValidatesOnExceptions=True}"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock Text="Отчество (если отчества нет, оставьте поле пустым)"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <TextBox x:Name="TbxPatronymic"
+                 Text="{Binding Patronymic, ValidatesOnExceptions=True}"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <!-- дома выбранной улицы; в анкету записывается Id дома, при смене улицы - null -->
+        <TextBlock Text="Улица"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxStreet"
+                  DisplayMemberPath="Name"
+                  Style="{DynamicResource InputListStyle}"/>
+
+        <TextBlock Text="Дом"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxHouse"
+                  ItemsSource="{Binding SelectedItem.Houses, ElementName=CbxStreet}"
+                  DisplayMemberPath="Building"
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding HouseId}"
+                  Style="{DynamicResource InputListStyle}"/>
+
+        <TextBlock Text="Квартира (для частного дома оставьте поле пустым)"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <TextBox x:Name="TbxFlat"
+                 Text="{Binding FlatText, ValidatesOnExceptions=True}"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock x:Name="TblLogin"
+                   Text="Логин"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <TextBox x:Name="TbxLogin"
+                 Text="{Binding Login, ValidatesOnExceptions=True}"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock Text="Пароль"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <PasswordBox x:Name="PbxPassword"
+                     Style="{DynamicResource InputPasswordStyle}"/>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0 16 0 0">
+            <Button Content="Зарегистрировать"
+                    Style="{DynamicResource DialogButtonStyle}"
+                    IsDefault="True"
+                    Click="BtnOk_Click"/>
+            <Button Content="Отмена"
+                    Style="{DynamicResource DialogButtonStyle}"
+                    IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

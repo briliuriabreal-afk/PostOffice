@@ -1,0 +1,49 @@
+<Window x:Class="PostOffice.Views.SubscriberHistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{DynamicResource WindowStyle}"
+        Language="ru-RU"
+        Icon="/Assets/Images/icon.png"
+        WindowStartupLocation="CenterOwner"
+        Width="1050"
+        Height="480"
+        MinWidth="900"
+        MinHeight="350"
+        ShowInTaskbar="False">
+    <DockPanel Margin="18">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Выберите оформленную подписку для повторной выдачи квитанции"
+                   Margin="0 0 0 12"
+                   TextWrapping="Wrap"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <StackPanel DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0 12 0 0">
+            <Button Content="Выдать квитанцию"
+                    IsDefault="True"
+                    Click="BtnOk_Click"
+                    Style="{DynamicResource PanelButtonStyle}"/>
+            <Button Content="Закрыть"
+                    IsCancel="True"
+                    Style="{DynamicResource PanelButtonStyle}"/>
+        </StackPanel>
+        <DataGrid x:Name="DgrSubscriptions"
+                  SelectedIndex="0"
+                  Style="{DynamicResource ResultGridStyle}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Квитанция" Binding="{Binding Id}"
+                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                <DataGridTextColumn Header="Индекс" Binding="{Binding PubIndex}"/>
+                <DataGridTextColumn Header="Издание" Binding="{Binding Title}" Width="*"/>
+                <DataGridTextColumn Header="Начало" Binding="{Binding DateStart, StringFormat=dd.MM.yyyy}"/>
+                <DataGridTextColumn Header="Окончание" Binding="{Binding DateEnd, StringFormat=dd.MM.yyyy}"/>
+                <DataGridTextColumn Header="Экз." Binding="{Binding Copies}"
+                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                <DataGridTextColumn Header="Стоимость, ₽" Binding="{Binding Cost, StringFormat=N2}"
+                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                <DataGridTextColumn Header="Состояние" Binding="{Binding Status}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
