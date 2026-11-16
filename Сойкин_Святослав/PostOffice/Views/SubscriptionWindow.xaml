@@ -1,0 +1,148 @@
+<Window x:Class="PostOffice.Views.SubscriptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{DynamicResource WindowStyle}"
+        Language="ru-RU"
+        Icon="/Assets/Images/icon.png"
+        WindowStartupLocation="CenterOwner"
+        Width="720"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        FocusManager.FocusedElement="{Binding ElementName=CbxPublication}"
+        Title="Оформление подписки">
+
+    <!-- Окно привязано к модели представления заказа: клиент, издание, начало, срок,
+         экземпляры, строки заказа и команды над ними.
+         Ширина окна задана: таблица со столбцом «*» растянула бы окно под размер экрана -->
+    <StackPanel Margin="24 18">
+        <TextBlock Text="Клиент"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox ItemsSource="{Binding Subscribers}"
+                  SelectedItem="{Binding Subscriber}"
+                  Style="{DynamicResource InputListStyle}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <Run Text="{Binding ShortName, Mode=OneWay}"/>
+                        <Run Text="-"/>
+                        <Run Text="{Binding Address, Mode=OneWay}"/>
+                    </TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <TextBlock Text="Издание"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxPublication"
+                  ItemsSource="{Binding Publications}"
+                  SelectedItem="{Binding Publication}"
+                  Style="{DynamicResource InputListStyle}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <Run Text="{Binding PubIndex, Mode=OneWay}"/>
+                        <Run Text="{Binding Title, Mode=OneWay}"/>
+                        <Run Text="-"/>
+                        <Run Text="{Binding Price, Mode=OneWay, StringFormat=N2}"/>
+                        <Run Text="₽ в месяц"/>
+                    </TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <StackPanel Orientation="Horizontal">
+            <StackPanel>
+                <TextBlock Text="Начало подписки"
+                           Style="{DynamicResource InputPromptStyle}"/>
+                <ComboBox ItemsSource="{Binding Months}"
+                          SelectedItem="{Binding DateStart}"
+                          ItemStringFormat="dd.MM.yyyy"
+                          Style="{DynamicResource InputShortListStyle}"/>
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock Text="Срок, месяцев"
+                           Style="{DynamicResource InputPromptStyle}"/>
+                <ComboBox ItemsSource="{Binding Durations}"
+                          SelectedItem="{Binding Duration}"
+                          Style="{DynamicResource InputShortListStyle}"/>
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock Text="Экземпляров"
+                           Style="{DynamicResource InputPromptStyle}"/>
+                <ComboBox ItemsSource="{Binding CopiesValues}"
+                          SelectedItem="{Binding Copies}"
+                          Style="{DynamicResource InputShortListStyle}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <DockPanel Margin="0 12 0 0">
+            <Button DockPanel.Dock="Right"
+                    Content="Добавить в заказ"
+                    ToolTip="Добавить издание в заказ: в одном заказе можно выписать несколько изданий"
+                    Command="{Binding AddLineCommand}"
+                    Style="{DynamicResource DialogButtonStyle}"/>
+            <TextBlock Style="{DynamicResource SumTextStyle}">
+                <Run Text="Стоимость:"/>
+                <Run Text="{Binding Cost, Mode=OneWay, StringFormat=N2}"/>
+                <Run Text="₽"/>
+            </TextBlock>
+        </DockPanel>
+
+        <TextBlock Text="Заказ"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <DataGrid x:Name="DgrLines"
+                  ItemsSource="{Binding Lines}"
+                  Height="150"
+                  Style="{DynamicResource ResultGridStyle}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Индекс"
+                                    Binding="{Binding Publication.PubIndex}"/>
+                <DataGridTextColumn Header="Издание"
+                                    Binding="{Binding Publication.Title}"
+                                    Width="*"/>
+                <DataGridTextColumn Header="Начало"
+                                    Binding="{Binding DateStart, StringFormat=dd.MM.yyyy}"/>
+                <DataGridTextColumn Header="Мес."
+                                    Binding="{Binding Duration}"
+                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                <DataGridTextColumn Header="Экз."
+                                    Binding="{Binding Copies}"
+                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+                <DataGridTextColumn Header="Стоимость, ₽"
+                                    Binding="{Binding Cost, StringFormat=N2}"
+                                    ElementStyle="{DynamicResource NumberCellStyle}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DockPanel>
+            <Button DockPanel.Dock="Left"
+                    Content="Убрать из заказа"
+                    ToolTip="Убрать из заказа выбранное в таблице издание"
+                    Command="{Binding RemoveLineCommand}"
+                    CommandParameter="{Binding SelectedItem, ElementName=DgrLines}"
+                    Style="{DynamicResource DialogButtonStyle}"/>
+            <TextBlock Style="{DynamicResource SumTextStyle}"
+                       HorizontalAlignment="Right">
+                <Run Text="Итого:"/>
+                <Run Text="{Binding Total, Mode=OneWay, StringFormat=N2}"/>
+                <Run Text="₽"/>
+            </TextBlock>
+        </DockPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0 16 0 0">
+            <Button Content="Оформить"
+                    ToolTip="Оформить подписку на каждое издание заказа и выдать квитанции"
+                    Style="{DynamicResource DialogButtonStyle}"
+                    IsDefault="True"
+                    Click="BtnOk_Click"/>
+            <Button Content="Отмена"
+                    Style="{DynamicResource DialogButtonStyle}"
+                    IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

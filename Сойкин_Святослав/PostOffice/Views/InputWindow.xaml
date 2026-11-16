@@ -1,0 +1,64 @@
+<Window x:Class="PostOffice.Views.InputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{DynamicResource WindowStyle}"
+        Language="ru-RU"
+        Icon="/Assets/Images/icon.png"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Title="Параметры">
+
+    <!-- Поле показывается выпадающим списком, если набор значений закрыт,
+         и полем ввода, если значение произвольное; лишние поля скрываются -->
+    <StackPanel Margin="24 18">
+
+        <TextBlock x:Name="TblPrompt1"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxValue1"
+                  Style="{DynamicResource InputListStyle}"/>
+        <TextBox x:Name="TbxValue1"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock x:Name="TblPrompt2"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxValue2"
+                  Style="{DynamicResource InputListStyle}"/>
+        <TextBox x:Name="TbxValue2"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock x:Name="TblPrompt3"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxValue3"
+                  Style="{DynamicResource InputListStyle}"/>
+        <TextBox x:Name="TbxValue3"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock x:Name="TblPrompt4"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxValue4"
+                  Style="{DynamicResource InputListStyle}"/>
+        <TextBox x:Name="TbxValue4"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <TextBlock x:Name="TblPrompt5"
+                   Style="{DynamicResource InputPromptStyle}"/>
+        <ComboBox x:Name="CbxValue5"
+                  Style="{DynamicResource InputListStyle}"/>
+        <TextBox x:Name="TbxValue5"
+                 Style="{DynamicResource InputBoxStyle}"/>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0 16 0 0">
+            <Button Content="ОК"
+                    Style="{DynamicResource DialogButtonStyle}"
+                    IsDefault="True"
+                    Click="BtnOk_Click"/>
+            <Button Content="Отмена"
+                    Style="{DynamicResource DialogButtonStyle}"
+                    IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

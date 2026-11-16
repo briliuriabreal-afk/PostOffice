@@ -1,0 +1,271 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="WindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="#1E1E1E"/>
+    </Style>
+
+    <Style x:Key="MenuStyle" TargetType="Menu" BasedOn="{StaticResource MenuBaseStyle}">
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="MenuItemStyle" TargetType="MenuItem">
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#1E1E1E"/>
+    </Style>
+
+    <!-- Переопределение стандартного стиля MenuItem
+           Позаимствовал тут:
+           https://stackoverflow.com/questions/4029917/wpf-transparent-menu
+        -->
+    <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}" TargetType="MenuItem">
+        <Border Name="Border" >
+            <Grid>
+                <ContentPresenter
+                        Margin="6 3"
+                        ContentSource="Header"
+                        RecognizesAccessKey="True" />
+                <Popup
+                        Name="Popup"
+                        Placement="Bottom"
+                        IsOpen="{TemplateBinding IsSubmenuOpen}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Fade">
+                    <Border
+                            Name="SubmenuBorder"
+                            SnapsToDevicePixels="True"
+                            Background="Gray">
+                        <StackPanel
+                                IsItemsHost="True"
+                                KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSuspendingPopupAnimation" Value="True">
+                <Setter TargetName="Popup" Property="PopupAnimation" Value="None" />
+            </Trigger>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter TargetName="Border" Property="Background" Value="#1a3c50"/>
+                <Setter TargetName="Border" Property="BorderBrush" Value="#26a0da"/>
+                <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
+            </Trigger>
+            <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
+                <Setter TargetName="SubmenuBorder" Property="Padding" Value="5"/>
+                <Setter TargetName="SubmenuBorder" Property="Background" Value="#6a717c"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#2d333c"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="ToolBarTrayStyle" TargetType="ToolBarTray">
+        <Setter Property="Background" Value="#1E1E1E"/>
+    </Style>
+
+    <Style x:Key="ToolBarStyle" TargetType="ToolBar">
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Foreground" Value="White"/>
+
+        <!-- Панель перерисована без ручки и кнопки переполнения: стандартная кнопка переполнения светлая
+             и на тёмной теме видна белой полосой, а все кнопки и так помещаются при минимальной ширине окна -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolBar">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <ToolBarPanel x:Name="PART_ToolBarPanel"
+                                      IsItemsHost="True"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Кнопки перерисованы ради подсветки: на стандартной светлой подсветке белый текст не читается -->
+    <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
+        <Border x:Name="BdrButton"
+                Background="{TemplateBinding Background}"
+                Padding="{TemplateBinding Padding}"
+                CornerRadius="3">
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="Center"/>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="BdrButton" Property="Background" Value="#3D6E9E"/>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="BdrButton" Property="Background" Value="#22456A"/>
+            </Trigger>
+
+            <!-- команда недоступна текущей роли -->
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="BdrButton" Property="Opacity" Value="0.35"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="ToolBarButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+    </Style>
+
+    <Style x:Key="DialogButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonBaseStyle}">
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+    </Style>
+
+    <Style x:Key="PanelButtonStyle" TargetType="Button" BasedOn="{StaticResource PanelButtonBaseStyle}">
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+    </Style>
+
+    <Style x:Key="ToolBarImageStyle" TargetType="Image" BasedOn="{StaticResource ToolBarImageBaseStyle}">
+        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+    </Style>
+
+    <Style x:Key="ToolBarCaptionStyle" TargetType="TextBlock" BasedOn="{StaticResource ToolBarCaptionBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="QueryTextStyle" TargetType="TextBlock" BasedOn="{StaticResource QueryTextBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="ResultTextStyle" TargetType="TextBlock" BasedOn="{StaticResource ResultTextBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="ResultGridStyle" TargetType="DataGrid" BasedOn="{StaticResource ResultGridBaseStyle}">
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="RowBackground" Value="#1E1E1E"/>
+        <Setter Property="AlternatingRowBackground" Value="#2A2A2A"/>
+        <Setter Property="BorderBrush" Value="#3F7CB0"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="#2A4A78"/>
+        <Setter Property="VerticalGridLinesBrush" Value="#2A4A78"/>
+        <Setter Property="ColumnHeaderStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="#2A2A2A"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Padding" Value="6 4"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <!-- Выбранная строка - цветом темы: на стандартной светлой подсветке белые числа не видны -->
+        <Setter Property="CellStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#3F7CB0"/>
+                            <Setter Property="BorderBrush" Value="#3F7CB0"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NumberCellStyle" TargetType="TextBlock" BasedOn="{StaticResource NumberCellBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="TabControlStyle" TargetType="TabControl" BasedOn="{StaticResource TabControlBaseStyle}">
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#3F7CB0"/>
+    </Style>
+
+    <Style x:Key="TabItemStyle" TargetType="TabItem" BasedOn="{StaticResource TabItemBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            BorderBrush="#3F7CB0" BorderThickness="1,1,1,0"
+                            Margin="0,0,2,0" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter x:Name="Content" ContentSource="Header"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#3F7CB0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#356A99"/>
+                        </Trigger>
+
+                        <!-- вкладка недоступна текущей роли -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#6A6A6A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SeparatorStyle" TargetType="Separator">
+        <Setter Property="Background" Value="DarkBlue"/>
+        <Setter Property="Foreground" Value="LightBlue"/>
+    </Style>
+
+    <Style x:Key="StatusBarStyle" TargetType="StatusBar">
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Foreground" Value="#3F7CB0"/>
+    </Style>
+
+    <Style x:Key="StatusTextStyle" TargetType="TextBlock" BasedOn="{StaticResource StatusTextBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="BigNumberStyle" TargetType="TextBlock" BasedOn="{StaticResource BigNumberBaseStyle}">
+        <Setter Property="Foreground" Value="#3F7CB0"/>
+    </Style>
+
+    <Style x:Key="InputPromptStyle" TargetType="TextBlock" BasedOn="{StaticResource InputPromptBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="InputListStyle" TargetType="ComboBox" BasedOn="{StaticResource InputListBaseStyle}"/>
+
+    <Style x:Key="InputShortListStyle" TargetType="ComboBox" BasedOn="{StaticResource InputShortListBaseStyle}"/>
+
+    <Style x:Key="SumTextStyle" TargetType="TextBlock" BasedOn="{StaticResource SumTextBaseStyle}">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="CommandPanelStyle" TargetType="StackPanel" BasedOn="{StaticResource CommandPanelBaseStyle}"/>
+
+    <Style x:Key="InputBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputBoxBaseStyle}">
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="BorderBrush" Value="#3F7CB0"/>
+    </Style>
+
+    <Style x:Key="InputPasswordStyle" TargetType="PasswordBox" BasedOn="{StaticResource InputPasswordBaseStyle}">
+        <Setter Property="Background" Value="#2A2A2A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="BorderBrush" Value="#3F7CB0"/>
+    </Style>
+
+</ResourceDictionary>
